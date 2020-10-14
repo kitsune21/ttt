@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-//#include <sysinfoapi.h>
 
 char displayValues[3] = {'_', 'X', 'O' };
 
@@ -17,7 +16,7 @@ void displayBoard(int board[]) {
 	}
 }
 
-int playerInput(int board[]) {
+void playerInput(int board[]) {
 	int square;
 	printf("\nPick a square: ");
 	scanf_s("%d", &square);
@@ -34,7 +33,7 @@ int playerInput(int board[]) {
 	}
 }
 
-int computerInput(int board[]) {
+void computerInput(int board[]) {
 	for (int i = 8; i > 0; i--) {
 		if (board[i] == 0) {
 			board[i] = 2;
