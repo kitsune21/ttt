@@ -1,56 +1,24 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
+//#include <sysinfoapi.h>
 
-int square;
-int board[9];
-
-
-int randInRange(int min, int max)
-{
-	return min + (int)(rand() / (double)(RAND_MAX + 1) * (max - min + 1));
-}
-
-char returnChar(int value) {
-	if (value == 1) {
-		return 'X';
-	}
-	else if (value == 2) {
-		return 'O';
-	}
-	else {
-		return '_';
-	}
-}
+char displayValues[3] = {'_', 'X', 'O' };
 
 void displayBoard(int board[]) {
 	printf("\nCurrent Board:\n\n");
-	for (int i = 0; i < 3; i++) {
-		if (i < 2) {
-			printf("%c | ", returnChar(board[i]));
+	for (int i = 0; i < 9; i++) {
+		if ((i + 1) % 3 == 0) {
+			printf("%c \n", displayValues[board[i]]);
 		}
 		else {
-			printf("%c \n", returnChar(board[i]));
-		}
-	}
-	for (int i = 3; i < 6; i++) {
-		if (i < 5) {
-			printf("%c | ", returnChar(board[i]));
-		}
-		else {
-			printf("%c \n", returnChar(board[i]));
-		}
-	}
-	for (int i = 6; i < 9; i++) {
-		if (i < 8) {
-			printf("%c | ", returnChar(board[i]));
-		}
-		else {
-			printf("%c \n", returnChar(board[i]));
+			printf("%c | ", displayValues[board[i]]);
 		}
 	}
 }
 
-int playerInput() {
+int playerInput(int board[]) {
+	int square;
 	printf("\nPick a square: ");
 	scanf_s("%d", &square);
 	square--;
@@ -61,12 +29,12 @@ int playerInput() {
 		square--;
 	}
 
-	if (returnChar(board[square]) == '_') {
+	if (displayValues[board[square]] == '_') {
 		board[square] = 1;
 	}
 }
 
-int computerInput() {
+int computerInput(int board[]) {
 	for (int i = 8; i > 0; i--) {
 		if (board[i] == 0) {
 			board[i] = 2;
@@ -77,79 +45,78 @@ int computerInput() {
 	printf("\nComputer Move: \n");
 }
 
-int checkWin() {
-	for (int i = 1; i < 3; i++) {
-		if (board[0] == i && board[1] == i && board[2] == i) {
-			return i;
-		}
-		else if (board[0] == i && board[4] == i && board[8] == i) {
-			return i;
-		}
-		else if (board[0] == i && board[3] == i && board[6] == i) {
-			return i;
-		}
-		else if (board[1] == i && board[4] == i && board[7] == i) {
-			return i;
-		}
-		else if (board[2] == i && board[5] == i && board[8] == i) {
-			return i;
-		}
-		else if (board[2] == i && board[4] == i && board[6] == i) {
-			return i;
-		}
-		else if (board[3] == i && board[4] == i && board[5] == i) {
-			return i;
-		}
-		else if (board[6] == i && board[7] == i && board[8] == i) {
-			return i;
-		}
+int checkWin(int board[]) {
+	if (board[0] & board[1] & board[2]) {
+		return board[0];
+	}
+	else if (board[0] & board[4] & board[8]) {
+		return board[0];
+	}
+	else if (board[0] & board[3] & board[6]) {
+		return board[0];
+	}
+	else if (board[1] & board[4] & board[7]) {
+		return board[1];
+	}
+	else if (board[2] & board[5] & board[8]) {
+		return board[2];
+	}
+	else if (board[2] & board[4] & board[6]) {
+		return board[2];
+	}
+	else if (board[3] & board[4] & board[5]) {
+		return board[3];
+	}
+	else if (board[6] & board[7] & board[8]) {
+		return board[6];
 	}
 
 	return 100;
 }
 
 int main() {
-	int won = 0;
-	int first;
-	
+	long first;
+	int board[9];
 
 	//instructions
 	printf("Welcome to Tic-Tac-Toe!\nTo play you will input the corresponding square space on your turn. Here is the board: \n");
 	printf("1|2|3\n4|5|6\n7|8|9\n");
 
 	//determine comp/human first
-	first = randInRange(0, 1);
-	printf("Player %d will go first.\n", first + 1);
+	first = time(NULL) % 2;
+	printf("Player %ld will go first.\n", first + 1);
 
 	for (int i = 0; i < 9; i++) {
 		board[i] = 0;
 	}
 
+	if (first) {
+		computerInput(board);
+		displayBoard(board);
+	}
+
 	//start game loop
-	while (won == 0) {
+	while (1) {
 		//ask for input
-		playerInput();
+		playerInput(board);
 
 		//show updated board
 		displayBoard(board);
 
 		//check win
-		int testWin = checkWin();
-		if (testWin == 1) {
+		if (checkWin(board) == 1) {
 			printf("\n You Win!\n");
 			break;
 		}
 
-
 		//calculate computer input
-		computerInput();
+		computerInput(board);
 
 		//show updated board
 		displayBoard(board);
 
 		//check win
-		testWin = checkWin();
-		if (testWin == 2) {
+		if (checkWin(board) == 2) {
 			printf("\nYou Lose!\n");
 			break;
 		}

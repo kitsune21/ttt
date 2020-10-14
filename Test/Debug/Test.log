@@ -1,4 +1,4 @@
 ﻿  main.c
-c:\users\cecil\desktop\c stuff\test\test\main.c(67): warning C4716: 'playerInput': must return a value
-c:\users\cecil\desktop\c stuff\test\test\main.c(78): warning C4716: 'computerInput': must return a value
+c:\users\cecil\desktop\c stuff\test\test\main.c(46): warning C4716: 'computerInput': must return a value
+c:\users\cecil\desktop\c stuff\test\test\main.c(35): warning C4716: 'playerInput': must return a value
   Test.vcxproj -> C:\Users\Cecil\Desktop\C Stuff\Test\Debug\Test.exe
