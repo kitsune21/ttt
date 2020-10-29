@@ -4,6 +4,8 @@
 
 char displayValues[3] = {'_', 'X', 'O' };
 
+int possibleWinCombos[8][3] = { {0, 1, 2}, {0, 4, 8}, {0, 3, 6}, {1, 4, 7}, {2, 5, 8}, {2, 4, 6}, {3, 4, 5}, {6, 7, 8} };
+
 void displayBoard(int board[]) {
 	printf("\nCurrent Board:\n\n");
 	for (int i = 0; i < 9; i++) {
@@ -34,40 +36,49 @@ void playerInput(int board[]) {
 }
 
 void computerInput(int board[]) {
-	for (int i = 8; i > 0; i--) {
-		if (board[i] == 0) {
-			board[i] = 2;
-			break;
+	//defensive computer
+	if (board[4] == 0) {
+		board[4] = 2;
+	}
+	else {
+		for (int i = 0; i < 8; ++i) {
+			//Find dangerous position
+			if (checkSquares(possibleWinCombos[i], board) >= 2) {
+				//find the empty square
+				for (int j = 0; j < 3; ++j) {
+					printf("Checking: %d\n", possibleWinCombos[i][j]);
+					if (board[possibleWinCombos[i][j]] == 0) {
+						board[possibleWinCombos[i][j]] = 2;
+						break;
+					}
+				}
+			}
 		}
 	}
+
+	//Don't recheck places that have already been checked and dealt with
 
 	printf("\nComputer Move: \n");
 }
 
+int checkSquares(int possibleWin[], int board[]) {
+	int count = 1;
+
+	if (board[possibleWin[0]] & board[possibleWin[1]]) {
+		++count;
+	}
+	if (board[possibleWin[0]] & board[possibleWin[2]]) {
+		++count;
+	}
+
+	return count;
+}
+
 int checkWin(int board[]) {
-	if (board[0] & board[1] & board[2]) {
-		return board[0];
-	}
-	else if (board[0] & board[4] & board[8]) {
-		return board[0];
-	}
-	else if (board[0] & board[3] & board[6]) {
-		return board[0];
-	}
-	else if (board[1] & board[4] & board[7]) {
-		return board[1];
-	}
-	else if (board[2] & board[5] & board[8]) {
-		return board[2];
-	}
-	else if (board[2] & board[4] & board[6]) {
-		return board[2];
-	}
-	else if (board[3] & board[4] & board[5]) {
-		return board[3];
-	}
-	else if (board[6] & board[7] & board[8]) {
-		return board[6];
+	for (int i = 0; i < 8; ++i) {
+		if (checkSquares(possibleWinCombos[i], board) == 3) {
+			return board[possibleWinCombos[i][0]];
+		}
 	}
 
 	return 100;
@@ -85,6 +96,7 @@ int main() {
 	first = time(NULL) % 2;
 	printf("Player %ld will go first.\n", first + 1);
 
+	//makes sure the board is all 0
 	for (int i = 0; i < 9; i++) {
 		board[i] = 0;
 	}
