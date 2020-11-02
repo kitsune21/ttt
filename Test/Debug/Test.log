@@ -1,4 +1,3 @@
 ﻿  main.c
-c:\users\cecil\desktop\c stuff\test\test\main.c(54): warning C4013: 'checkSquares' undefined; assuming extern returning int
-c:\users\cecil\desktop\c stuff\test\test\main.c(44): warning C4716: 'checkNextCompInput': must return a value
+c:\users\cecil\desktop\c stuff\test\test\main.c(48): warning C4013: 'checkSquares' undefined; assuming extern returning int
   Test.vcxproj -> C:\Users\Cecil\Desktop\C Stuff\Test\Debug\Test.exe

@@ -5,6 +5,7 @@
 char displayValues[3] = {'_', 'X', 'O' };
 
 int possibleWinCombos[8][3] = { {0, 1, 2}, {0, 4, 8}, {0, 3, 6}, {1, 4, 7}, {2, 5, 8}, {2, 4, 6}, {3, 4, 5}, {6, 7, 8} };
+int corners[4] = { 0, 2, 6, 8 };
 
 void displayBoard(int board[]) {
 	printf("\nCurrent Board:\n\n");
@@ -36,39 +37,65 @@ void playerInput(int board[]) {
 }
 
 void computerInput(int board[]) {
-	//defensive computer
+	int moveMade = 0;
+
 	if (board[4] == 0) {
 		board[4] = 2;
 	}
 	else {
 		for (int i = 0; i < 8; ++i) {
 			//Find dangerous position
-			if (checkSquares(possibleWinCombos[i], board) >= 2) {
+			if (checkSquares(possibleWinCombos[i], board) >= 1) {
 				//find the empty square
 				for (int j = 0; j < 3; ++j) {
-					printf("Checking: %d\n", possibleWinCombos[i][j]);
-					if (board[possibleWinCombos[i][j]] == 0) {
-						board[possibleWinCombos[i][j]] = 2;
-						break;
+					if (board[possibleWinCombos[i][j]] == 0 && !moveMade) {
+						if(board[possibleWinCombos[i][j]] == 0){
+							board[possibleWinCombos[i][j]] = 2;
+							moveMade = 1;
+							break;
+						}
 					}
 				}
 			}
 		}
+		//Prioritize corners if no danger
+		if (!moveMade) {
+			for (int i = 0; i < 9; ++i) {
+				if (board[corners[i]] == 0) {
+					board[corners[i]] = 2;
+					moveMade = 1;
+					break;
+				}
+			}
+		}
+		//fill in anything else if nothing else to do
+		if (!moveMade) {
+			for (int i = 0; i < 9; ++i) {
+				if (board[i] == 0) {
+					board[i] = 2;
+					moveMade = 1;
+				}
+			}
+		}
+		if (!moveMade) {
+			printf("No move made\n");
+		}
 	}
-
-	//Don't recheck places that have already been checked and dealt with
 
 	printf("\nComputer Move: \n");
 }
 
 int checkSquares(int possibleWin[], int board[]) {
-	int count = 1;
+	int count = 0;
 
 	if (board[possibleWin[0]] & board[possibleWin[1]]) {
-		++count;
+		count++;
+	}
+	if (board[possibleWin[1]] & board[possibleWin[2]]) {
+		count++;
 	}
 	if (board[possibleWin[0]] & board[possibleWin[2]]) {
-		++count;
+		count++;
 	}
 
 	return count;
@@ -82,6 +109,16 @@ int checkWin(int board[]) {
 	}
 
 	return 100;
+}
+
+int checkTie(int board[]) {
+	for (int i = 0; i < 9; ++i) {
+		if (board[i] == 0) {
+			return 0;
+		}
+	}
+
+	return 1;
 }
 
 int main() {
@@ -109,7 +146,12 @@ int main() {
 	//start game loop
 	while (1) {
 		//ask for input
-		playerInput(board);
+		if (!checkTie(board)) {
+			playerInput(board);
+		} else {
+			printf("Cat's Game\n");
+			break;
+		}
 
 		//show updated board
 		displayBoard(board);
@@ -121,7 +163,12 @@ int main() {
 		}
 
 		//calculate computer input
-		computerInput(board);
+		if (!checkTie(board)) {
+			computerInput(board);
+		} else {
+			printf("Cat's Game\n");
+			break;
+		}
 
 		//show updated board
 		displayBoard(board);
