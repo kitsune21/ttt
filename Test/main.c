@@ -74,6 +74,7 @@ void computerInput(int board[]) {
 				if (board[i] == 0) {
 					board[i] = 2;
 					moveMade = 1;
+					break;
 				}
 			}
 		}
